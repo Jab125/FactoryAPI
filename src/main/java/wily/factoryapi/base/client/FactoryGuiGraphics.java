@@ -14,7 +14,9 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 //?}
 
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
+//? if <26.2 {
+/*import net.minecraft.client.renderer.MultiBufferSource;
+*///?}
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.Identifier;
@@ -26,9 +28,11 @@ import java.util.Map;
 public interface FactoryGuiGraphics {
     net.minecraft.client.gui.GuiGraphicsExtractor context();
 
-    MultiBufferSource.BufferSource getBufferSource();
+    //? if <26.2 {
+    /*MultiBufferSource.BufferSource getBufferSource();
     void pushBufferSource(MultiBufferSource.BufferSource bufferSource);
     void popBufferSource();
+    *///?}
 
     FactoryGuiMatrixStack pose();
 
