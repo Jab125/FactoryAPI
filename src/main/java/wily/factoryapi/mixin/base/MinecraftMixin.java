@@ -74,13 +74,15 @@ public abstract class MinecraftMixin implements MinecraftAccessor {
     @Mutable
     @Shadow @Final private RealmsDataFetcher realmsDataFetcher;
 
-    @Shadow @Final private SplashManager splashManager;
+    //? if <26.2 {
+    /*@Shadow @Final private SplashManager splashManager;
+    *///?}
 
     //? if >=26.1 {
     @Inject(method = "resizeGui",at = @At("RETURN"))
     public void resizeGui(CallbackInfo ci) {
         if (this.level != null) {
-            UIAccessor.of(gui).reloadUI();
+            UIAccessor.of(gui/*? if >=26.2 {*/.hud/*?}*/).reloadUI();
             FactoryAPIClient.RESIZE_DISPLAY.invoker.accept(Minecraft.getInstance());
         }
     }
@@ -94,12 +96,14 @@ public abstract class MinecraftMixin implements MinecraftAccessor {
     }
     *///?}
 
-    @Inject(method = "setScreen",at = @At("RETURN"))
+    //? if <26.2 {
+    /*@Inject(method = "setScreen",at = @At("RETURN"))
     public void setScreen(Screen screen, CallbackInfo ci) {
         if (this.level != null) {
             UIAccessor.of(gui).reloadUI();
         }
     }
+    *///?}
     @Inject(method = "stop",at = @At("RETURN"))
     public void stop(CallbackInfo ci) {
         FactoryAPIClient.STOPPING.invoker.accept(Minecraft.getInstance());
@@ -138,7 +142,8 @@ public abstract class MinecraftMixin implements MinecraftAccessor {
         Screen.wrapScreenError(accessor::afterTick, "Ticking screen after tick", Minecraft.getInstance().screen.getClass().getCanonicalName());
     }
     *///?} else {
-    @Inject(method = "tick",at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;tick()V"))
+    //? if <26.2 {
+    /*@Inject(method = "tick",at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;tick()V"))
     public void beforeScreenTick(CallbackInfo ci) {
         if (FactoryAPIClient.getScreen() != null) UIAccessor.of(FactoryAPIClient.getScreen()).beforeTick();
     }
@@ -147,6 +152,7 @@ public abstract class MinecraftMixin implements MinecraftAccessor {
     public void afterScreenTick(CallbackInfo ci) {
         if (FactoryAPIClient.getScreen() != null) UIAccessor.of(FactoryAPIClient.getScreen()).afterTick();
     }
+    *///?}
     //?}
 
     @Override
@@ -155,7 +161,11 @@ public abstract class MinecraftMixin implements MinecraftAccessor {
             LOGGER.warn("Something went wrong, the User cannot be set to null");
             return false;
         }
-        this.user = splashManager.user = user;
+        //? if <26.2 {
+        /*this.user = splashManager.user = user;
+        *///?} else {
+        this.user = gui.splashManager().user;
+        //?}
         //? if >=1.21.9 {
         MinecraftSessionService session = Minecraft.getInstance().services().sessionService();
         YggdrasilAuthenticationService authenticationService = this.offlineDeveloperMode
