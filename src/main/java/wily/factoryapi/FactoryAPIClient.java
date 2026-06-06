@@ -7,9 +7,13 @@ import net.minecraft.client.DeltaTracker;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 //? if >=26.1 {
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.block.BlockTintSource;
+//? if >=26.2 {
+import net.minecraft.client.gui.Hud;
+//?}
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 //?} else if >1.21.4 {
 /*import net.minecraft.client.renderer.block.model.BlockStateModel;
@@ -108,7 +112,6 @@ import wily.factoryapi.base.compat.client.FactoryAPIModMenuCompat;
 *///?}
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.client.rendering.v1.*;
@@ -224,7 +227,7 @@ public class FactoryAPIClient {
     }
 
     public static /*? if <1.21.2 {*//*ToastComponent*//*?} else {*/ToastManager/*?}*/getToasts() {
-        return Minecraft.getInstance()./*? if <1.21.2 {*//*getToasts*//*?} else {*/getToastManager/*?}*/();
+        return Minecraft.getInstance()./*? if <1.21.2 {*//*getToasts*//*?} else if <26.2 {*//*getToastManager*//*?} else {*/gui.toastManager/*?}*/();
     }
 
     public static float getPartialTick() {
@@ -249,8 +252,12 @@ public class FactoryAPIClient {
         return Minecraft.getInstance().getWindow()./*? if >=1.21.9 {*/handle()/*?} else {*//*getWindow()*//*?}*/;
     }
 
+    public static void setScreen(Screen screen) {
+        Minecraft.getInstance()/*? if >=26.2 {*/.gui/*?}*/.setScreen(screen);
+    }
+
     public static Screen getScreen() {
-        return Minecraft.getInstance().screen;
+        return Minecraft.getInstance()/*? if <26.2 {*//*.screen*//*?} else {*/.gui.screen()/*?}*/;
     }
 
     public static void init() {
@@ -261,7 +268,7 @@ public class FactoryAPIClient {
             FactoryOptions.CLIENT_STORAGE.load();
         });
         preTick(m-> SECURE_EXECUTOR.executeAll());
-        FactoryGuiElement.HOTBAR.post().register(graphics -> UIAccessor.of(Minecraft.getInstance().gui).getChildrenRenderables().forEach(r -> {
+        FactoryGuiElement.HOTBAR.post().register(graphics -> UIAccessor.of(getGuiOrHud(Minecraft.getInstance())).getChildrenRenderables().forEach(r -> {
             //? if >=26.1 {
             r.extractRenderState(graphics, 0, 0, getPartialTick());
             //?} else {
@@ -342,7 +349,7 @@ public class FactoryAPIClient {
     public static <T extends AbstractContainerMenu> void handleExtraMenu(SecureExecutor executor, Player player, MenuType<T> menuType, OpenExtraMenuPayload payload) {
         var menu = ((MenuTypeAccessor)menuType).getConstructor() instanceof FactoryExtraMenuSupplier<?> supplier ? (T) supplier.create(payload.menuId(), player.getInventory(), payload.extra()) : menuType.create(payload.menuId(), player.getInventory());
         player.containerMenu = menu;
-        executor.execute(()-> Minecraft.getInstance().setScreen(MenuScreensAccessor.getConstructor(menuType).create(menu, player.getInventory(), payload.component())));
+        executor.execute(()-> setScreen(MenuScreensAccessor.getConstructor(menuType).create(menu, player.getInventory(), payload.component())));
     }
 
     public static void setup(Consumer<Minecraft> listener) {
@@ -513,6 +520,16 @@ public class FactoryAPIClient {
         *///?} else
         /*throw new AssertionError();*/
     }
+
+    //? if <26.2 {
+    /*public static Gui getGuiOrHud(Minecraft minecraft) {
+        return minecraft.gui;
+    }
+    *///?} else {
+    public static Hud getGuiOrHud(Minecraft minecraft) {
+        return minecraft.gui.hud;
+    }
+    //?}
 
     //? if <1.21.4 {
     /*public static void registerItemColor(Consumer<BiConsumer<ItemColor, Item>> registry) {
