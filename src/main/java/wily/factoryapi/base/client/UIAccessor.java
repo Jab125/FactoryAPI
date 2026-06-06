@@ -3,6 +3,9 @@ package wily.factoryapi.base.client;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+//? if >=26.2 {
+import net.minecraft.client.gui.Hud;
+//?}
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
@@ -40,9 +43,15 @@ public interface UIAccessor extends UIDefinition, VariableResolver {
         return (UIAccessor) screen;
     }
 
-    static UIAccessor of(Gui gui) {
+    //? if <26.2 {
+    /*static UIAccessor of(Gui gui) {
         return (UIAccessor) gui;
     }
+    *///?} else {
+    static UIAccessor of(Hud hud) {
+        return (UIAccessor) hud;
+    }
+    //?}
 
     @Nullable
     Screen getScreen();
