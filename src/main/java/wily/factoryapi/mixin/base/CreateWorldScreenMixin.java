@@ -16,6 +16,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import wily.factoryapi.FactoryAPIClient;
 import wily.factoryapi.base.client.DatapackRepositoryAccessor;
 import wily.factoryapi.base.client.UIAccessor;
 
@@ -52,7 +53,7 @@ public abstract class CreateWorldScreenMixin extends Screen implements DatapackR
     @Override
     public void tryApplyNewDataPacks(PackRepository repository) {
         tryApplyNewDataPacks(repository, false, data -> {
-            if (this instanceof UIAccessor accessor) Minecraft.getInstance().setScreen(accessor.getScreen());
+            if (this instanceof UIAccessor accessor) FactoryAPIClient.setScreen(accessor.getScreen());
         });
     }
 }
