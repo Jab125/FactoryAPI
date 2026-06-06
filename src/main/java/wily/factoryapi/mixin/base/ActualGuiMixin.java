@@ -1,5 +1,5 @@
 //? if >=26.2 {
-package wily.factoryapi.mixin.base;
+/*package wily.factoryapi.mixin.base;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -41,4 +41,4 @@ public class ActualGuiMixin {
 		if (FactoryAPIClient.getScreen() != null) UIAccessor.of(FactoryAPIClient.getScreen()).afterTick();
 	}
 }
-//?}
+*///?}
