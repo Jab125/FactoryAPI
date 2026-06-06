@@ -2,6 +2,9 @@ package wily.factoryapi.base;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+//? if >=26.2 {
+import net.minecraft.network.chat.TextColor;
+//?}
 
 import java.awt.*;
 
@@ -17,7 +20,13 @@ public record SlotsIdentifier(ChatFormatting color, String name,Component compon
     public static final SlotsIdentifier GENERIC = new SlotsIdentifier(ChatFormatting.GRAY,"single");
 
     public Color getColor(){
-        return new Color(color.getColor());
+        return new Color(
+                //? if <26.2 {
+                /*color.getColor()
+                *///?} else {
+                switch(TextColor.fromLegacyFormat(color)) { case TextColor color when Boolean.TRUE == true /*it's java 25 why doesn't this work without this hack*/ -> color.getValue(); case null, default -> 0;}
+                //?}
+        );
     }
 
     public SlotsIdentifier(ChatFormatting color, String name){
