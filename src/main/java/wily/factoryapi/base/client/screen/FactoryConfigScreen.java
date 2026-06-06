@@ -12,6 +12,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
+import wily.factoryapi.FactoryAPIClient;
 import wily.factoryapi.base.client.FactoryOptions;
 import wily.factoryapi.base.client.FactoryConfigWidgets;
 import wily.factoryapi.base.config.FactoryCommonOptions;
@@ -66,7 +67,7 @@ public class FactoryConfigScreen extends Screen {
 
     @Override
     public void onClose() {
-        minecraft.setScreen(parent);
+        FactoryAPIClient.setScreen(parent);
     }
 
     public static class ConfigList extends ContainerObjectSelectionList<ConfigList.Entry>{
