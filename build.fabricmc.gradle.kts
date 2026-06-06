@@ -3,11 +3,15 @@ plugins {
 	id("net.fabricmc.fabric-loom")
 }
 
+val projectVersion = stonecutter.current.version
+val semver = if (stonecutter.current.version == "26.2") "26.2-pre.4" else stonecutter.current.version
+val realver = if (stonecutter.current.version == "26.2") "26.2-pre-4" else stonecutter.current.version
+
 platform {
 	loader = "fabric"
 	dependencies {
 		required("minecraft") {
-			versionRange = stonecutter.current.version
+			versionRange = semver
 		}
 		required("fabric-api") {
 			slug("fabric-api")
@@ -47,7 +51,7 @@ loom {
 
 fabricApi {
 	configureDataGeneration {
-		outputDirectory = file("${rootDir}/versions/datagen/${stonecutter.current.version.split("-")[0]}/src/main/generated")
+		outputDirectory = file("${rootDir}/versions/datagen/${projectVersion.split("-")[0]}/src/main/generated")
 		client = true
 	}
 }
@@ -59,7 +63,7 @@ repositories {
 }
 
 dependencies {
-	minecraft("com.mojang:minecraft:${stonecutter.current.version}")
+	minecraft("com.mojang:minecraft:${realver}")
 	implementation(libs.fabric.loader)
 	implementation("net.fabricmc.fabric-api:fabric-api:${prop("fabric_api_version")}")
 	implementation("com.terraformersmc:modmenu:${prop("modmenu_version")}")
