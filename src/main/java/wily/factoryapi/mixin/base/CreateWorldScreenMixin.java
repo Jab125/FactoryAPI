@@ -2,6 +2,9 @@ package wily.factoryapi.mixin.base;
 
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
+//? if >=26.2 {
+import net.minecraft.client.gui.components.tabs.MenuTabBar;
+//?}
 import net.minecraft.client.gui.components.tabs.TabNavigationBar;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.worldselection.CreateWorldScreen;
@@ -37,7 +40,11 @@ public abstract class CreateWorldScreenMixin extends Screen implements DatapackR
     @Shadow protected abstract void tryApplyNewDataPacks(PackRepository arg, boolean bl, Consumer<WorldDataConfiguration> consumer);
 
 
-    @Shadow @Nullable private TabNavigationBar tabNavigationBar;
+    //? if <26.2 {
+    /*@Shadow @Nullable private TabNavigationBar tabNavigationBar;
+    *///?} else {
+    @Shadow @Nullable private MenuTabBar tabNavigationBar;
+    //?}
 
     @Inject(method = "init", at = @At("RETURN"))
     public void init(CallbackInfo ci) {
