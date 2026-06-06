@@ -4,27 +4,27 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
 //? if >1.20.1 && <1.21.9 {
-import net.minecraft.client.gui.GuiSpriteManager;
-//?}
+/*import net.minecraft.client.gui.GuiSpriteManager;
+*///?}
 //? if >=1.21.9 {
-/*import net.minecraft.data.AtlasIds;
-*///?}
+import net.minecraft.data.AtlasIds;
+//?}
 //? if >=1.21.6 {
-/*import com.mojang.blaze3d.pipeline.RenderPipeline;
-*///?}
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+//?}
 
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.joml.Matrix4f;
 import wily.factoryapi.FactoryAPIClient;
 
 import java.util.Map;
 
 public interface FactoryGuiGraphics {
-    net.minecraft.client.gui.GuiGraphics context();
+    net.minecraft.client.gui.GuiGraphicsExtractor context();
 
     MultiBufferSource.BufferSource getBufferSource();
     void pushBufferSource(MultiBufferSource.BufferSource bufferSource);
@@ -32,37 +32,37 @@ public interface FactoryGuiGraphics {
 
     FactoryGuiMatrixStack pose();
 
-    static FactoryGuiGraphics of(net.minecraft.client.gui.GuiGraphics guiGraphics) {
+    static FactoryGuiGraphics of(net.minecraft.client.gui.GuiGraphicsExtractor guiGraphics) {
         return ((Accessor) guiGraphics).getFactoryGuiGraphics();
     }
 
     //? if >=1.21.9 {
-    /*static TextureAtlas getSprites() {
+    static TextureAtlas getSprites() {
         return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.GUI);
     }
-    *///?} else {
-    static GuiSpriteManager getSprites() {
-        return /*? if >1.20.1 {*/ Minecraft.getInstance().getGuiSprites()/*?} else {*//*FactoryAPIClient.sprites*//*?}*/;
+    //?} else {
+    /*static GuiSpriteManager getSprites() {
+        return /^? if >1.20.1 {^/ Minecraft.getInstance().getGuiSprites()/^?} else {^//^FactoryAPIClient.sprites^//^?}^/;
     }
-    //?}
+    *///?}
 
-    void blit(net.minecraft.resources.ResourceLocation texture, int x, int y, int uvX, int uvY, int width, int height);
+    void blit(net.minecraft.resources.Identifier texture, int x, int y, int uvX, int uvY, int width, int height);
 
-    void blit(net.minecraft.resources.ResourceLocation texture, int x, int y, int z, float uvX, float uvY, int width, int height, int textureWidth, int textureHeight);
+    void blit(net.minecraft.resources.Identifier texture, int x, int y, int z, float uvX, float uvY, int width, int height, int textureWidth, int textureHeight);
 
-    void blit(net.minecraft.resources.ResourceLocation texture, int x, int xd, int y, int yd, float uvX, float uvY, int width, int height, int textureWidth, int textureHeight);
+    void blit(net.minecraft.resources.Identifier texture, int x, int xd, int y, int yd, float uvX, float uvY, int width, int height, int textureWidth, int textureHeight);
 
-    void blit(net.minecraft.resources.ResourceLocation texture, int x, int y, float uvX, float uvY, int width, int height, int textureWidth, int textureHeight);
+    void blit(net.minecraft.resources.Identifier texture, int x, int y, float uvX, float uvY, int width, int height, int textureWidth, int textureHeight);
 
-    void blitSprite(net.minecraft.resources.ResourceLocation id, int x, int y, int width, int height);
+    void blitSprite(net.minecraft.resources.Identifier id, int x, int y, int width, int height);
 
-    void blitSprite(net.minecraft.resources.ResourceLocation id, int x, int y, int z, int width, int height);
+    void blitSprite(net.minecraft.resources.Identifier id, int x, int y, int z, int width, int height);
 
-    void blitSprite(net.minecraft.resources.ResourceLocation id, int textureWidth, int textureHeight, int uvX, int uvY, int x, int y, int z, int width, int height);
+    void blitSprite(net.minecraft.resources.Identifier id, int textureWidth, int textureHeight, int uvX, int uvY, int x, int y, int z, int width, int height);
 
     void blit(int x, int y, int z, int width, int height, TextureAtlasSprite textureAtlasSprite);
 
-    default void blitSprite(net.minecraft.resources.ResourceLocation id, int textureWidth, int textureHeight, int uvX, int uvY, int x, int y, int width, int height) {
+    default void blitSprite(net.minecraft.resources.Identifier id, int textureWidth, int textureHeight, int uvX, int uvY, int x, int y, int width, int height) {
         this.blitSprite(id, textureWidth, textureHeight, uvX, uvY, x, y,0, width, height);
     }
 
@@ -110,7 +110,7 @@ public interface FactoryGuiGraphics {
     *///?}
 
     //? if <1.21.2 {
-    default void blitTiledSprite(TextureAtlasSprite textureAtlasSprite, int i, int j, int k, int l, int m, int n, int o, int p, int q, int r, int s) {
+    /*default void blitTiledSprite(TextureAtlasSprite textureAtlasSprite, int i, int j, int k, int l, int m, int n, int o, int p, int q, int r, int s) {
         if (l <= 0 || m <= 0 ) {
             return;
         }
@@ -122,11 +122,11 @@ public interface FactoryGuiGraphics {
         Matrix4f matrix4f = context().pose().last().pose();
 
         //? if >=1.20.5 {
-        /*BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        *///?} else {
-        BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
+        BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        //?} else {
+        /^BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
         bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        //?}
+        ^///?}
 
         for(int t = 0; t < l; t += p) {
             int u = Math.min(p, l - t);
@@ -136,14 +136,14 @@ public interface FactoryGuiGraphics {
                 addBlitSpriteQuad(textureAtlasSprite, bufferBuilder, matrix4f, r, s, n, o, i + t, j + v, k, u, w);
             }
         }
-        BufferUploader.drawWithShader(bufferBuilder./*? if <1.20.5 {*/end/*?} else {*//*buildOrThrow*//*?}*/());
+        BufferUploader.drawWithShader(bufferBuilder./^? if <1.20.5 {^//^end^//^?} else {^/buildOrThrow/^?}^/());
     }
 
     //? if <=1.20.1 {
-    /*private void addBlitSpriteQuad(TextureAtlasSprite textureAtlasSprite, BufferBuilder bufferBuilder, Matrix4f matrix4f, int i, int j, int k, int l, int m, int n, int o, int p, int q) {
+    /^private void addBlitSpriteQuad(TextureAtlasSprite textureAtlasSprite, BufferBuilder bufferBuilder, Matrix4f matrix4f, int i, int j, int k, int l, int m, int n, int o, int p, int q) {
         addBlitQuad(bufferBuilder, matrix4f, m, m + p, n, n + q, o, textureAtlasSprite.getU((float)k / (float)i * 16), textureAtlasSprite.getU((float)(k + p) / (float)i * 16), textureAtlasSprite.getV((float)l / (float)j * 16), textureAtlasSprite.getV((float)(l + q) / (float)j * 16));
     }
-    *///?} else {
+    ^///?} else {
     private void addBlitSpriteQuad(TextureAtlasSprite textureAtlasSprite, BufferBuilder bufferBuilder, Matrix4f matrix4f, int i, int j, int k, int l, int m, int n, int o, int p, int q) {
         addBlitQuad(bufferBuilder, matrix4f, m, m + p, n, n + q, o, textureAtlasSprite.getU((float)k / (float)i), textureAtlasSprite.getU((float)(k + p) / (float)i), textureAtlasSprite.getV((float)l / (float)j), textureAtlasSprite.getV((float)(l + q) / (float)j));
     }
@@ -151,22 +151,22 @@ public interface FactoryGuiGraphics {
 
     private void addBlitQuad(BufferBuilder bufferBuilder, Matrix4f matrix4f, int i, int j, int k, int l, int m, float f, float g, float h, float n) {
         //? if <1.20.5 {
-        bufferBuilder.vertex(matrix4f, (float)i, (float)k, (float)m).uv(f, h).endVertex();
+        /^bufferBuilder.vertex(matrix4f, (float)i, (float)k, (float)m).uv(f, h).endVertex();
         bufferBuilder.vertex(matrix4f, (float)i, (float)l, (float)m).uv(f, n).endVertex();
         bufferBuilder.vertex(matrix4f, (float)j, (float)l, (float)m).uv(g, n).endVertex();
         bufferBuilder.vertex(matrix4f, (float)j, (float)k, (float)m).uv(g, h).endVertex();
-        //?} else {
-        /*bufferBuilder.addVertex(matrix4f, (float)i, (float)k, (float)m).setUv(f, h);
+        ^///?} else {
+        bufferBuilder.addVertex(matrix4f, (float)i, (float)k, (float)m).setUv(f, h);
         bufferBuilder.addVertex(matrix4f, (float)i, (float)l, (float)m).setUv(f, n);
         bufferBuilder.addVertex(matrix4f, (float)j, (float)l, (float)m).setUv(g, n);
         bufferBuilder.addVertex(matrix4f, (float)j, (float)k, (float)m).setUv(g, h);
-        *///?}
+        //?}
     }
-    //?}
+    *///?}
 
     //? if <1.21.6 {
 
-    void setColor(int color, boolean changeBlend);
+    /*void setColor(int color, boolean changeBlend);
 
     void setColor(float r, float g, float b, float a, boolean changeBlend);
 
@@ -189,10 +189,10 @@ public interface FactoryGuiGraphics {
         clearColor(false);
     }
 
-    //?}
+    *///?}
 
     //? if >=1.21.2 {
-    /*void setBlitColor(int color);
+    void setBlitColor(int color);
 
     void setBlitColor(float r, float g, float b, float a);
 
@@ -201,7 +201,7 @@ public interface FactoryGuiGraphics {
     default void clearBlitColor() {
         setBlitColor(1.0f,1.0f,1.0f,1.0f);
     }
-    *///?}
+    //?}
 
     @Deprecated
     void disableDepthTest();
@@ -213,7 +213,7 @@ public interface FactoryGuiGraphics {
         static AtlasAccessor of(TextureAtlas atlas) {
             return (AtlasAccessor) atlas;
         }
-        Map<net.minecraft.resources.ResourceLocation, TextureAtlasSprite> getTexturesByName();
+        Map<net.minecraft.resources.Identifier, TextureAtlasSprite> getTexturesByName();
     }
 
     interface Accessor {

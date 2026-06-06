@@ -9,7 +9,7 @@ import com.mojang.authlib.yggdrasil.ProfileResult;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import com.mojang.realmsclient.client.RealmsClient;
 import com.mojang.realmsclient.gui.RealmsDataFetcher;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.User;
 import net.minecraft.client.gui.Gui;
@@ -58,11 +58,11 @@ public abstract class MinecraftMixin implements MinecraftAccessor {
     //?}
 
     //? if <1.21.9 {
-    @Shadow @Final private YggdrasilAuthenticationService authenticationService;
-    //?} else {
-    /*@Shadow @Final private Proxy proxy;
+    /*@Shadow @Final private YggdrasilAuthenticationService authenticationService;
+    *///?} else {
+    @Shadow @Final private Proxy proxy;
     @Shadow @Final private boolean offlineDeveloperMode;
-    *///?}
+    //?}
 
     @Mutable
     @Shadow @Final private ClientTelemetryManager telemetryManager;
@@ -77,22 +77,22 @@ public abstract class MinecraftMixin implements MinecraftAccessor {
     @Shadow @Final private SplashManager splashManager;
 
     //? if >=26.1 {
-    /*@Inject(method = "resizeGui",at = @At("RETURN"))
+    @Inject(method = "resizeGui",at = @At("RETURN"))
     public void resizeGui(CallbackInfo ci) {
         if (this.level != null) {
             UIAccessor.of(gui).reloadUI();
             FactoryAPIClient.RESIZE_DISPLAY.invoker.accept(Minecraft.getInstance());
         }
     }
-    *///?} else {
-    @Inject(method = "resizeDisplay",at = @At("RETURN"))
+    //?} else {
+    /*@Inject(method = "resizeDisplay",at = @At("RETURN"))
     public void resizeDisplay(CallbackInfo ci) {
         if (this.level != null) {
             UIAccessor.of(gui).reloadUI();
             FactoryAPIClient.RESIZE_DISPLAY.invoker.accept(Minecraft.getInstance());
         }
     }
-    //?}
+    *///?}
 
     @Inject(method = "setScreen",at = @At("RETURN"))
     public void setScreen(Screen screen, CallbackInfo ci) {
@@ -106,9 +106,9 @@ public abstract class MinecraftMixin implements MinecraftAccessor {
     }
 
     //? if <1.20.5 {
-    @Accessor
+    /*@Accessor
     public abstract float getPausePartialTick();
-    //?}
+    *///?}
 
     //? if <=1.20.1 {
     /*@Unique boolean gameLoaded = false;
@@ -124,7 +124,7 @@ public abstract class MinecraftMixin implements MinecraftAccessor {
     }
 
     //? if <1.21.2 {
-    @Inject(method = "tick",at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;wrapScreenError(Ljava/lang/Runnable;Ljava/lang/String;Ljava/lang/String;)V"))
+    /*@Inject(method = "tick",at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;wrapScreenError(Ljava/lang/Runnable;Ljava/lang/String;Ljava/lang/String;)V"))
     public void beforeScreenTick(CallbackInfo ci) {
         if (Minecraft.getInstance().screen == null) return;
         UIAccessor accessor = UIAccessor.of(Minecraft.getInstance().screen);
@@ -137,8 +137,8 @@ public abstract class MinecraftMixin implements MinecraftAccessor {
         UIAccessor accessor = UIAccessor.of(Minecraft.getInstance().screen);
         Screen.wrapScreenError(accessor::afterTick, "Ticking screen after tick", Minecraft.getInstance().screen.getClass().getCanonicalName());
     }
-    //?} else {
-    /*@Inject(method = "tick",at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;tick()V"))
+    *///?} else {
+    @Inject(method = "tick",at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;tick()V"))
     public void beforeScreenTick(CallbackInfo ci) {
         if (FactoryAPIClient.getScreen() != null) UIAccessor.of(FactoryAPIClient.getScreen()).beforeTick();
     }
@@ -147,7 +147,7 @@ public abstract class MinecraftMixin implements MinecraftAccessor {
     public void afterScreenTick(CallbackInfo ci) {
         if (FactoryAPIClient.getScreen() != null) UIAccessor.of(FactoryAPIClient.getScreen()).afterTick();
     }
-    *///?}
+    //?}
 
     @Override
     public boolean setUser(User user) {
@@ -157,14 +157,14 @@ public abstract class MinecraftMixin implements MinecraftAccessor {
         }
         this.user = splashManager.user = user;
         //? if >=1.21.9 {
-        /*MinecraftSessionService session = Minecraft.getInstance().services().sessionService();
+        MinecraftSessionService session = Minecraft.getInstance().services().sessionService();
         YggdrasilAuthenticationService authenticationService = this.offlineDeveloperMode
                 ? YggdrasilAuthenticationService.createOffline(this.proxy)
                 : new YggdrasilAuthenticationService(this.proxy);
-        *///?} else {
-        MinecraftSessionService session = Minecraft.getInstance().getMinecraftSessionService();
+        //?} else {
+        /*MinecraftSessionService session = Minecraft.getInstance().getMinecraftSessionService();
         boolean offlineDeveloperMode = user.getType() != User.Type.MSA;
-        //?}
+        *///?}
         //? if >=1.20.3 {
         this.profileFuture = CompletableFuture.supplyAsync(() -> session.fetchProfile(user.getProfileId(), true), Util.nonCriticalIoPool());
         this.userApiService = offlineDeveloperMode ? UserApiService.OFFLINE : authenticationService.createUserApiService(user.getAccessToken());
@@ -188,7 +188,7 @@ public abstract class MinecraftMixin implements MinecraftAccessor {
         this.profileKeyPairManager = ProfileKeyPairManager.create(userApiService, user, Minecraft.getInstance().gameDirectory.toPath());
         this.telemetryManager = new ClientTelemetryManager(Minecraft.getInstance(), userApiService, user);
         this.reportingContext = ReportingContext.create(ReportEnvironment.local(), userApiService);
-        this.realmsDataFetcher = new RealmsDataFetcher(/*? if >1.21.4 {*//*RealmsClient.getOrCreate()*//*?} else {*/RealmsClient.create(Minecraft.getInstance())/*?}*/);
+        this.realmsDataFetcher = new RealmsDataFetcher(/*? if >1.21.4 {*/RealmsClient.getOrCreate()/*?} else {*//*RealmsClient.create(Minecraft.getInstance())*//*?}*/);
         //? if >=1.20.3
         RealmsAvailabilityAccessor.setFuture(null);
         return true;
