@@ -15,7 +15,9 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
-import net.minecraft.client.renderer.MultiBufferSource;
+//? if <26.2 {
+/*import net.minecraft.client.renderer.MultiBufferSource;
+*///?}
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -48,11 +50,13 @@ public class FactoryScreenUtil {
         switch (stack) {
             case net.minecraft.client.gui.GuiGraphicsExtractor graphics -> graphics./*? if >=26.1 {*/text/*?} else {*/ /*drawString*//*?}*/(font, text, x, y, color, shadow);
             case PoseStack poseStack -> {
-                MultiBufferSource.BufferSource source = mc.renderBuffers().bufferSource();
-				font.drawInBatch(/*? if >=1.21.2 {*/Component.literal(text)/*?} else {*/ /*text*//*?}*/, (float) x, (float) y, color, shadow, poseStack.last().pose(), source, Font.DisplayMode.NORMAL, 0, 15728880/*? if <1.21.6 {*//*, font.isBidirectional()*//*?}*/);
+                //? if <26.2 {
+                /*MultiBufferSource.BufferSource source = mc.renderBuffers().bufferSource();
+				font.drawInBatch(/^? if >=1.21.2 {^/Component.literal(text)/^?} else {^/ /^text^//^?}^/, (float) x, (float) y, color, shadow, poseStack.last().pose(), source, Font.DisplayMode.NORMAL, 0, 15728880/^? if <1.21.6 {^//^, font.isBidirectional()^//^?}^/);
                 disableDepthTest();
                 source.endBatch();
                 enableDepthTest();
+                *///?}
 			}
 			default -> throw new IllegalStateException("Unexpected value: " + stack);
 		}
@@ -74,11 +78,13 @@ public class FactoryScreenUtil {
     }
 
     public static void disableBlend(){
-        GlStateManager._disableBlend();
+        //? if <26.2
+        //GlStateManager._disableBlend();
     }
 
     public static void enableBlend(){
-        GlStateManager._enableBlend();
+        //? if <26.2
+        //GlStateManager._enableBlend();
     }
 
     public static void setShaderColor(float r, float g, float b, float a) {
@@ -159,6 +165,6 @@ public class FactoryScreenUtil {
     }
 
     public static UIAccessor getGuiAccessor(){
-        return UIAccessor.of(mc.gui);
+        return UIAccessor.of(FactoryAPIClient.getGuiOrHud(mc));
     }
 }
