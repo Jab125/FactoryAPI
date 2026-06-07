@@ -70,10 +70,12 @@ public class FactoryScreenUtil {
     }
 
     public static void disableDepthTest(){
+        //? if <26.2
         GlStateManager._disableDepthTest();
     }
 
     public static void enableDepthTest(){
+        //? if <26.2
         GlStateManager._enableDepthTest();
     }
 
