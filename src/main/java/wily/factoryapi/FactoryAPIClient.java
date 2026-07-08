@@ -297,7 +297,7 @@ public class FactoryAPIClient {
         });
         //? if fabric {
         //? if >=1.21.9 {
-        /*IFactoryItemClientExtension.map.forEach((i,c)-> ArmorRenderer.register((matrices, vertexConsumers, stack, entity, slot, light, contextModel)-> vertexConsumers.submitModel(c.getHumanoidArmorModel(entity,stack,slot,contextModel), entity, matrices, /^?if <1.21.11 {^/RenderType/^?} else {^//^RenderTypes^//^?}^/.entityCutout(((IFactoryItem) i).getArmorLocation(stack, slot)), light, OverlayTexture.NO_OVERLAY, 0xFFFFFF, null), i));
+        /*IFactoryItemClientExtension.map.forEach((i,c)-> ArmorRenderer.register((matrices, vertexConsumers, stack, entity, slot, light, contextModel)-> vertexConsumers.submitModel(c.getHumanoidArmorModel(entity,stack,slot,contextModel), entity, matrices, /^?if <1.21.11 {^/RenderType/^?} else {^//^RenderTypes^//^?}^/.entityCutout(((IFactoryItem) i).getArmorLocation(stack, slot)), light, OverlayTexture.NO_OVERLAY, 0xFFFFFF/^? if <26.3 {^/, null/^?}^/), i));
         *///?} else {
         IFactoryItemClientExtension.map.forEach((i,c)-> ArmorRenderer.register((matrices, vertexConsumers, stack, entity, slot, light, contextModel)-> c.getHumanoidArmorModel(entity,stack,slot,contextModel).renderToBuffer(matrices,vertexConsumers.getBuffer(RenderType.entityCutout(((IFactoryItem) i).getArmorLocation(stack,/*? if <1.21.2 {*/ entity, /*?}*/slot))), light, OverlayTexture.NO_OVERLAY/*? if <=1.20.6 {*/, 1.0F,1.0F,1.0F, 1.0F/*?}*/),i));
         //?}

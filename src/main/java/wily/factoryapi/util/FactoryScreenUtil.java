@@ -1,8 +1,8 @@
 package wily.factoryapi.util;
 
-//? if >1.21.4 {
+//? if >1.21.4 && <26.3 {
 /*import com.mojang.blaze3d.opengl.GlStateManager;
- *///?} else {
+ *///?} else if <26.3 {
 import com.mojang.blaze3d.platform.GlStateManager;
 //?}
 import com.mojang.blaze3d.platform.Lighting;
