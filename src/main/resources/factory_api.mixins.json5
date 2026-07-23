@@ -72,7 +72,7 @@
     *///?}
     //? if <1.21.2 {
     "RecipeManagerAccessor",
-    //?} else {
+    //?} else if <26.3 {
     /*"FuelValuesAccessor",
     *///?}
     "IngredientMixin",
