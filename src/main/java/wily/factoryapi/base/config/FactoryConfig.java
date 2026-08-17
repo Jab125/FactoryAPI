@@ -124,11 +124,11 @@ public interface FactoryConfig<T> extends Bearer<T> {
         protected final boolean allowSync;
         protected boolean serverOnly;
 
-        public final FactoryEvent<Consumer<StorageHandler>> preLoad = new FactoryEvent<>(e-> m-> e.invokeAll(l->l.accept(m)));
-        public final FactoryEvent<Consumer<StorageHandler>> afterLoad = new FactoryEvent<>(e-> m-> e.invokeAll(l->l.accept(m)));
+        public final FactoryEvent<Consumer<StorageHandler>> preLoad = FactoryEvent.createForConsumer();
+        public final FactoryEvent<Consumer<StorageHandler>> afterLoad = FactoryEvent.createForConsumer();
 
-        public final FactoryEvent<Consumer<StorageHandler>> preSave = new FactoryEvent<>(e-> m-> e.invokeAll(l->l.accept(m)));
-        public final FactoryEvent<Consumer<StorageHandler>> afterSave = new FactoryEvent<>(e-> m-> e.invokeAll(l->l.accept(m)));
+        public final FactoryEvent<Consumer<StorageHandler>> preSave = FactoryEvent.createForConsumer();
+        public final FactoryEvent<Consumer<StorageHandler>> afterSave = FactoryEvent.createForConsumer();
 
 
         public StorageHandler(Map<String, FactoryConfig<?>> configMap, boolean allowSync) {

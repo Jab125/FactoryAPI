@@ -318,8 +318,8 @@ public class FactoryAPIClient {
         *///?}
     }
 
-    public static final FactoryEvent<Consumer<Minecraft>> STOPPING = new FactoryEvent<>(e-> m-> e.invokeAll(l->l.accept(m)));
-    public static final FactoryEvent<Consumer<Minecraft>> RESIZE_DISPLAY = new FactoryEvent<>(e-> m-> e.invokeAll(l->l.accept(m)));
+    public static final FactoryEvent<Consumer<Minecraft>> STOPPING = FactoryEvent.createForConsumer();
+    public static final FactoryEvent<Consumer<Minecraft>> RESIZE_DISPLAY = FactoryEvent.createForConsumer();
 
     //? if fabric {
     public static <T extends CommonNetwork.Payload> void registerPayload(CommonNetwork.Identifier<T> id) {
