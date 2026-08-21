@@ -99,6 +99,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -107,7 +108,7 @@ public class FactoryEvent<T> {
     protected final List<T> listeners = new ArrayList<>();
     public final T invoker;
 
-    public FactoryEvent(Function<FactoryEvent<T>, T> invoker){
+    public FactoryEvent(Function<FactoryEvent<T>, T> invoker) {
         this.invoker = invoker.apply(this);
     }
 
@@ -115,17 +116,25 @@ public class FactoryEvent<T> {
         return new FactoryEvent<>(e -> value -> e.invokeAll(t -> t.accept(value)));
     }
 
-    public void invokeAll(Consumer<T> invoker){
+    public static <T, U> FactoryEvent<BiConsumer<T, U>> createForBiConsumer() {
+        return new FactoryEvent<>(e -> (t, u) -> e.invokeAll(c -> c.accept(t, u)));
+    }
+
+    public static <T, U, V> FactoryEvent<TriConsumer<T, U, V>> createForTriConsumer() {
+        return new FactoryEvent<>(e -> (t, u, v) -> e.invokeAll(c -> c.accept(t, u, v)));
+    }
+
+    public void invokeAll(Consumer<T> invoker) {
         listeners.forEach(invoker);
     }
 
-    public void invokeAnyMatch(Predicate<T> invoker){
+    public void invokeAnyMatch(Predicate<T> invoker) {
         for (T listener : listeners) {
             if (invoker.test(listener)) return;
         }
     }
 
-    public void register(T listener){
+    public void register(T listener) {
         listeners.add(listener);
     }
 
@@ -243,7 +252,7 @@ public class FactoryEvent<T> {
         /*throw new AssertionError();*/
     }
 
-    public static void registerReloadListener(PackType type, PreparableReloadListener reloadListener){
+    public static void registerReloadListener(PackType type, PreparableReloadListener reloadListener) {
         //? if fabric {
         net.minecraft.resources.ResourceLocation location = FactoryAPI.createLocation(reloadListener.getName());
         ResourceManagerHelper.get(type).registerReloadListener(new IdentifiableResourceReloadListener() {
@@ -282,7 +291,7 @@ public class FactoryEvent<T> {
         /*throw new AssertionError();*/
     }
 
-    public static void registerCommands(TriConsumer<CommandDispatcher<CommandSourceStack>, CommandBuildContext, Commands.CommandSelection> register){
+    public static void registerCommands(TriConsumer<CommandDispatcher<CommandSourceStack>, CommandBuildContext, Commands.CommandSelection> register) {
         //? if fabric {
         CommandRegistrationCallback.EVENT.register(register::accept);
         //?} elif forge && <1.21.6 {
@@ -298,18 +307,18 @@ public class FactoryEvent<T> {
     @FunctionalInterface
     public interface PackRegistry {
         void register(String path, net.minecraft.resources.ResourceLocation name, Component component, Pack.Position position, boolean enabledByDefault);
-        default void register(String path, net.minecraft.resources.ResourceLocation name, boolean enabledByDefault){
+        default void register(String path, net.minecraft.resources.ResourceLocation name, boolean enabledByDefault) {
             register(path, name, Component.translatable(name.getNamespace() + ".builtin." + name.getPath()), Pack.Position.TOP, enabledByDefault);
         }
-        default void registerResourcePack(net.minecraft.resources.ResourceLocation location, boolean enabledByDefault){
+        default void registerResourcePack(net.minecraft.resources.ResourceLocation location, boolean enabledByDefault) {
             register("resourcepacks/"+location.getPath(), location, enabledByDefault);
         }
-        default void registerResourcePack(String pathName, boolean enabledByDefault){
+        default void registerResourcePack(String pathName, boolean enabledByDefault) {
             registerResourcePack(FactoryAPI.createVanillaLocation(pathName),enabledByDefault);
         }
     }
 
-    public static Pack createBuiltInPack(net.minecraft.resources.ResourceLocation name, Component displayName, boolean defaultEnabled, PackType type, Pack.Position position, Path resourcePath){
+    public static Pack createBuiltInPack(net.minecraft.resources.ResourceLocation name, Component displayName, boolean defaultEnabled, PackType type, Pack.Position position, Path resourcePath) {
         //? if <=1.20.1 {
         /*return Pack.readMetaAndCreate(name.toString(), displayName,false, s-> new PathPackResources(s, resourcePath,true), type, position, PackSource.create(PackSource.BUILT_IN::decorate, defaultEnabled));
         *///?} else if <1.20.5 {
@@ -319,7 +328,7 @@ public class FactoryEvent<T> {
         *///?}
     }
 
-    public static void registerBuiltInPacks(Consumer<PackRegistry> registry){
+    public static void registerBuiltInPacks(Consumer<PackRegistry> registry) {
         //? if fabric {
         registry.accept(((path, name, component, position, enabledByDefault) -> ResourceManagerHelper.registerBuiltinResourcePack(name, FabricLoader.getInstance().getModContainer(name.getNamespace()).orElseThrow(), component, enabledByDefault ? ResourcePackActivationType.DEFAULT_ENABLED : ResourcePackActivationType.NORMAL)));
          //?} elif (forge && <1.21.6) || (neoforge && <1.21.9) {
@@ -366,7 +375,7 @@ public class FactoryEvent<T> {
         <T extends CommonNetwork.Payload> void register(boolean c2s, CommonNetwork.Identifier<T> identifier);
     }
 
-    public static void registerPayload(Consumer<PayloadRegistry> registry){
+    public static void registerPayload(Consumer<PayloadRegistry> registry) {
         //? if fabric {
         registry.accept(new PayloadRegistry() {
             @Override
@@ -423,7 +432,7 @@ public class FactoryEvent<T> {
     }
 
     //? if >=1.20.5 {
-    /*public static <C> void setItemComponent(Item item, DataComponentType<C> type, C value){
+    /*public static <C> void setItemComponent(Item item, DataComponentType<C> type, C value) {
         //? if fabric {
         DefaultItemComponentEvents.MODIFY.register(c->  c.modify(item, bc-> bc.set(type,value)));
         //?} elif forge && <1.21.6 {
