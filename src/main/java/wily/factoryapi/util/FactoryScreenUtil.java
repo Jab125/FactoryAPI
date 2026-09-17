@@ -18,6 +18,7 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 //? if <26.2 {
 import net.minecraft.client.renderer.MultiBufferSource;
 //?}
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -30,6 +31,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
 import wily.factoryapi.FactoryAPIClient;
@@ -163,10 +165,20 @@ public class FactoryScreenUtil {
     }
 
     public static UIAccessor getScreenAccessor(){
-        return UIAccessor.of(FactoryAPIClient.getScreen());
+        return UIAccessor.of(FactoryScreenUtil.getScreen());
     }
 
     public static UIAccessor getGuiAccessor(){
         return UIAccessor.of(FactoryAPIClient.getGuiOrHud(mc));
+    }
+
+    @ApiStatus.Internal
+    public static void setScreen(Screen screen) {
+        Minecraft.getInstance()/*? if >=26.2 {*//*.gui*//*?}*/.setScreen(screen);
+    }
+
+    @ApiStatus.Internal
+    public static Screen getScreen() {
+        return Minecraft.getInstance()/*? if <26.2 {*/.screen/*?} else {*//*.gui.screen()*//*?}*/;
     }
 }

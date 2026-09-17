@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import wily.factoryapi.FactoryAPIClient;
+import wily.factoryapi.util.FactoryScreenUtil;
 import wily.factoryapi.base.client.UIAccessor;
 
 @Mixin(Gui.class)
@@ -33,12 +33,12 @@ public class ActualGuiMixin {
 
 	@Inject(method = "tick",at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;tick()V"))
 	public void beforeScreenTick(CallbackInfo ci) {
-		if (FactoryAPIClient.getScreen() != null) UIAccessor.of(FactoryAPIClient.getScreen()).beforeTick();
+		if (FactoryScreenUtil.getScreen() != null) UIAccessor.of(FactoryScreenUtil.getScreen()).beforeTick();
 	}
 
 	@Inject(method = "tick",at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;tick()V", shift = At.Shift.AFTER))
 	public void afterScreenTick(CallbackInfo ci) {
-		if (FactoryAPIClient.getScreen() != null) UIAccessor.of(FactoryAPIClient.getScreen()).afterTick();
+		if (FactoryScreenUtil.getScreen() != null) UIAccessor.of(FactoryScreenUtil.getScreen()).afterTick();
 	}
 }
 *///?}

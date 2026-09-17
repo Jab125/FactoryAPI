@@ -19,9 +19,9 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import wily.factoryapi.FactoryAPIClient;
 import wily.factoryapi.base.client.DatapackRepositoryAccessor;
 import wily.factoryapi.base.client.UIAccessor;
+import wily.factoryapi.util.FactoryScreenUtil;
 
 import java.nio.file.Path;
 import java.util.function.Consumer;
@@ -60,7 +60,7 @@ public abstract class CreateWorldScreenMixin extends Screen implements DatapackR
     @Override
     public void tryApplyNewDataPacks(PackRepository repository) {
         tryApplyNewDataPacks(repository, false, data -> {
-            if (this instanceof UIAccessor accessor) FactoryAPIClient.setScreen(accessor.getScreen());
+            if (this instanceof UIAccessor accessor) FactoryScreenUtil.setScreen(accessor.getScreen());
         });
     }
 }

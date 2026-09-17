@@ -252,14 +252,6 @@ public class FactoryAPIClient {
         return Minecraft.getInstance().getWindow()./*? if >=1.21.9 {*//*handle()*//*?} else {*/getWindow()/*?}*/;
     }
 
-    public static void setScreen(Screen screen) {
-        Minecraft.getInstance()/*? if >=26.2 {*//*.gui*//*?}*/.setScreen(screen);
-    }
-
-    public static Screen getScreen() {
-        return Minecraft.getInstance()/*? if <26.2 {*/.screen/*?} else {*//*.gui.screen()*//*?}*/;
-    }
-
     public static void init() {
         registerConfigScreen(FactoryAPIPlatform.getModInfo(FactoryAPI.MOD_ID), FactoryConfigScreen::createFactoryAPIConfigScreen);
 
@@ -349,7 +341,7 @@ public class FactoryAPIClient {
     public static <T extends AbstractContainerMenu> void handleExtraMenu(SecureExecutor executor, Player player, MenuType<T> menuType, OpenExtraMenuPayload payload) {
         var menu = ((MenuTypeAccessor)menuType).getConstructor() instanceof FactoryExtraMenuSupplier<?> supplier ? (T) supplier.create(payload.menuId(), player.getInventory(), payload.extra()) : menuType.create(payload.menuId(), player.getInventory());
         player.containerMenu = menu;
-        executor.execute(()-> setScreen(MenuScreensAccessor.getConstructor(menuType).create(menu, player.getInventory(), payload.component())));
+        executor.execute(()-> FactoryScreenUtil.setScreen(MenuScreensAccessor.getConstructor(menuType).create(menu, player.getInventory(), payload.component())));
     }
 
     public static void setup(Consumer<Minecraft> listener) {

@@ -98,7 +98,7 @@ public class UIDefinitionManager implements ResourceManagerReloadListener {
     }
 
     public interface WidgetAction<P, W extends AbstractWidget> {
-        ListMap<net.minecraft.resources.ResourceLocation, WidgetAction<?, AbstractWidget>> map = new ListMap.Builder<String, WidgetAction<?, AbstractWidget>>().put("open_default_screen", create(net.minecraft.resources.ResourceLocation.CODEC, (s) -> (a, w, t) -> FactoryAPIClient.setScreen(DEFAULT_SCREENS_MAP.getOrDefault(s, s1 -> null).apply(a.getScreen())))).put("open_config_screen", create(Codec.STRING, (s) -> (a, w, t) -> FactoryAPIClient.setScreen(FactoryAPIClient.getConfigScreen(FactoryAPIPlatform.getModInfo(s), a.getScreen())))).put("reload_ui", create(Codec.EMPTY.codec(), (s) -> (a, w, t) -> a.reloadUI())).put("run_command", createRunCommand(s -> true)).put("run_windows_command", createRunCommand(s -> Util.getPlatform() == Util.OS.WINDOWS)).put("run_linux_command", createRunCommand(s -> Util.getPlatform() == Util.OS.LINUX)).put("run_osx_command", createRunCommand(s -> Util.getPlatform() == Util.OS.OSX)).put("toggle_datapacks", createToggleDatapacks()).mapKeys(FactoryAPI::createVanillaLocation).build();
+        ListMap<net.minecraft.resources.ResourceLocation, WidgetAction<?, AbstractWidget>> map = new ListMap.Builder<String, WidgetAction<?, AbstractWidget>>().put("open_default_screen", create(net.minecraft.resources.ResourceLocation.CODEC, (s) -> (a, w, t) -> FactoryScreenUtil.setScreen(DEFAULT_SCREENS_MAP.getOrDefault(s, s1 -> null).apply(a.getScreen())))).put("open_config_screen", create(Codec.STRING, (s) -> (a, w, t) -> FactoryScreenUtil.setScreen(FactoryAPIClient.getConfigScreen(FactoryAPIPlatform.getModInfo(s), a.getScreen())))).put("reload_ui", create(Codec.EMPTY.codec(), (s) -> (a, w, t) -> a.reloadUI())).put("run_command", createRunCommand(s -> true)).put("run_windows_command", createRunCommand(s -> Util.getPlatform() == Util.OS.WINDOWS)).put("run_linux_command", createRunCommand(s -> Util.getPlatform() == Util.OS.LINUX)).put("run_osx_command", createRunCommand(s -> Util.getPlatform() == Util.OS.OSX)).put("toggle_datapacks", createToggleDatapacks()).mapKeys(FactoryAPI::createVanillaLocation).build();
         Codec<WidgetAction<?, AbstractWidget>> CODEC = map.createCodec(net.minecraft.resources.ResourceLocation.CODEC);
 
         Codec<P> getCodec();
@@ -671,8 +671,8 @@ public class UIDefinitionManager implements ResourceManagerReloadListener {
     }
 
     public void openDefaultScreenAndAddDefinition(Optional<net.minecraft.resources.ResourceLocation> defaultScreen, UIDefinition uiDefinition) {
-        Screen s = defaultScreen.map(DEFAULT_SCREENS_MAP::get).orElse(parent-> new Screen(Component.empty()) {}).apply(FactoryAPIClient.getScreen());
+        Screen s = defaultScreen.map(DEFAULT_SCREENS_MAP::get).orElse(parent-> new Screen(Component.empty()) {}).apply(FactoryScreenUtil.getScreen());
         UIAccessor.of(s).addStatic(uiDefinition);
-        FactoryAPIClient.setScreen(s);
+        FactoryScreenUtil.setScreen(s);
     }
 }

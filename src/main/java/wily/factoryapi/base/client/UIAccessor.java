@@ -72,7 +72,7 @@ public interface UIAccessor extends UIDefinition, VariableResolver {
         putStaticElement("windowHeight", minecraft.getWindow().getHeight());
         putStaticElement("width", minecraft.getWindow().getGuiScaledWidth());
         putStaticElement("height", minecraft.getWindow().getGuiScaledHeight());
-        getElements().put("hasScreen", ()-> FactoryAPIClient.getScreen() != null);
+        getElements().put("hasScreen", ()-> FactoryScreenUtil.getScreen() != null);
         if (getChildrenRenderables() != null)
             getElements().put("renderablesCount", getChildrenRenderables()::size);
         FactoryAPIPlatform.getMods().forEach(i -> putStaticElement("loadedMods." + i.getId(), true));
